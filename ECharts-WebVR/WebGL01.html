@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ECharts & WebVR学院</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            h1 {display: block; margin: 8px auto; font-size: 2rem; text-align: center;}
+            .canvas-container {
+                margin: 24px auto;
+                width: 800px; height: 600px;
+            }
+        </style>
+        <script src="http://cdn.bootcss.com/three.js/r83/three.min.js"></script>
+        <script>
+            var renderer, scene, camera, underframe, carriage,
+                    frontWheel, backWheel;
+            function init() {
+                renderer = new THREE.WebGLRenderer({
+                    canvas: document.getElementById('mainCanvas'),
+                    antialias: true, //  开启消除锯齿,默认false
+                    precision: "highp"   // 渲染精度  highp/mediump/lowp
+                });
+
+                renderer.setClearColor(0x606060);
+
+                scene = new THREE.Scene();
+                underframe = new THREE.Mesh(new THREE.BoxGeometry(8, 2, 4),
+                        new THREE.MeshBasicMaterial({
+                            color: 0xCCCFCF,
+                        })
+                        );
+
+                scene.add(underframe);
+
+                carriage = new THREE.Mesh(new THREE.BoxGeometry(6, 3, 4),
+                        new THREE.MeshBasicMaterial({
+                            color: 0xCCFFFF,
+                        })
+                        );
+                carriage.position.x = -1;
+                carriage.position.y = 2.5;
+                scene.add(carriage);
+
+                frontWheel = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 8, 16),
+                        new THREE.MeshBasicMaterial({
+                            color: 0xFF9F9F,
+                        })
+                        );
+                frontWheel.position.x = 2;
+                frontWheel.position.y = -1;
+                frontWheel.position.z = 2;
+                scene.add(frontWheel);
+
+                backWheel = new THREE.Mesh(new THREE.TorusGeometry(1, 0.6, 8, 16),
+                        new THREE.MeshBasicMaterial({
+                            color: 0x9C9FFF,
+                        })
+                        );
+                backWheel.position.x = -2;
+                backWheel.position.y = -1;
+                backWheel.position.z = 2;
+                scene.add(backWheel);
+
+                //透视投影照相机
+                camera = new THREE.PerspectiveCamera(60, 4 / 3, 1, 1000);
+                camera.position.set(6,6,10);
+                camera.lookAt(new THREE.Vector3(0, 0, 0));
+                scene.add(camera);
+
+                renderer.render(scene, camera);
+            }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1>WebGL No.1 - Three.js 入门</h1>
+        <div class="canvas-container">
+            <canvas id="mainCanvas" width="800" height="600" ></canvas>
+        </div>
+    </body>
+</html>
