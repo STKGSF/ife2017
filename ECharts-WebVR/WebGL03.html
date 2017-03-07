@@ -68,12 +68,14 @@
                 var underframe = new THREE.Mesh(new THREE.BoxGeometry(8, 2, 4),
                         new THREE.MeshLambertMaterial({color: 0x666666})
                         );
+                underframe.castShadow = true;
                 car.add(underframe);
 
                 var materials = [];
                 var carriage = new THREE.Mesh(new THREE.BoxGeometry(6, 3, 4));
                 carriage.position.x = -1;
                 carriage.position.y = 2.5;
+                carriage.castShadow = true;
                 for (var i = 0; i < 6; ++i) {
                     materials[i] = null;
                     // rigt left top bottom front back
@@ -98,6 +100,7 @@
                         new THREE.MeshLambertMaterial({color: 0x333333})
                         );
                 frontWheel.receiveShadow = true;
+                frontWheel.castShadow = true;
                 frontWheel.position.x = 2;
                 frontWheel.position.y = -1;
                 frontWheel.position.z = 2;
@@ -107,6 +110,7 @@
                         new THREE.MeshLambertMaterial({color: 0x333333})
                         );
                 backWheel.receiveShadow = true;
+                backWheel.castShadow = true;
                 backWheel.position.x = -2;
                 backWheel.position.y = -1;
                 backWheel.position.z = 2;
@@ -135,7 +139,7 @@
                                     floorBoard = new THREE.Mesh(new THREE.PlaneGeometry(20, 40),
                                             material
                                             );
-                                    floorBoard.position.y = -2.2;
+                                    floorBoard.position.y = -2.4;
                                     floorBoard.position.z = -4;
                                     floorBoard.position.x = -2;
                                     floorBoard.rotation.x = -Math.PI / 2;
@@ -157,7 +161,7 @@
                         scene.add(light);
 
                         var pointLight = new THREE.PointLight(0xFFFFFF, 1, 100);
-                        pointLight.position.set(2, 5, 8);
+                        pointLight.position.set(3, 8, 6);
                         pointLight.castShadow = true;
                         scene.add(pointLight);
 
