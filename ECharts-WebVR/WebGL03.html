@@ -14,17 +14,18 @@
         <script src="https://cdn.bootcss.com/three.js/r83/three.min.js"></script>
         <script>
             var renderer, scene, camera, floorBoard, loader,
-                    car, car_img_urls;
+                    car, car_img_urls, completed=0;
             function loadTexture(loader, ms, pos, url, mesh, group) {
                 loader.load(url,
                         function (texture) {
+                            completed++;
                             var material = new THREE.MeshLambertMaterial({
                                 color: 0x666666,
                                 map: texture
                             });
                             ms[pos] = material;
                             if (ms.length >= 6) {
-                                mesh.material = ms;
+                                mesh.material = new THREE.MultiMaterial(ms);
                                 group.add(mesh);
                                 renderer.render(scene, camera);
                             }
@@ -82,6 +83,7 @@
                         case 0:
                         case 5:
                             materials[i] = new THREE.MeshLambertMaterial({color: 0x333333});
+                            completed++;
                             break;
                     }
                 }
