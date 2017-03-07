@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
             h1 {display: block; margin: 8px auto; font-size: 2rem; text-align: center;}
+            #process {text-align: center}
             .canvas-container {
                 margin: 24px auto;
                 width: 800px; height: 600px;
@@ -14,11 +15,13 @@
         <script src="https://cdn.bootcss.com/three.js/r83/three.min.js"></script>
         <script>
             var renderer, scene, camera, floorBoard, loader,
-                    car, car_img_urls, completed=0;
+                    car, car_img_urls, completed=0, process;
             function loadTexture(loader, ms, pos, url, mesh, group) {
                 loader.load(url,
                         function (texture) {
                             completed++;
+                            process.innerHTML = 'Loading......'+completed+'/6';
+                    
                             var material = new THREE.MeshLambertMaterial({
                                 color: 0x666666,
                                 map: texture
@@ -28,11 +31,12 @@
                                 mesh.material = new THREE.MultiMaterial(ms);
                                 group.add(mesh);
                                 renderer.render(scene, camera);
+                                
+                                process.style = 'display:none;';
                             }
-                            console.log('size of ms is' + ms.length);
                         },
                         function (xhr) {
-                            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                            console.log(url+" "+(xhr.loaded / xhr.total * 100) + '% loaded');
                         },
                         function (xhr) {
                             console.log('An error happened');
@@ -41,6 +45,8 @@
                 );
             }
             function init() {
+                process = document.getElementById('process');
+                
                 renderer = new THREE.WebGLRenderer({
                     canvas: document.getElementById('mainCanvas'),
                     antialias: true, //  开启消除锯齿,默认false
@@ -174,6 +180,7 @@
     </head>
     <body onload="init()">
         <h1>WebGL No.3 - 材质与纹理</h1>
+        <div id="process">Loading......</div>
         <div class="canvas-container">
             <canvas id="mainCanvas" width="800" height="600" ></canvas>
         </div>
