@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ECharts & WebVR学院</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            h1 {display: block; margin: 8px auto; font-size: 2rem; text-align: center;}
+            .canvas-container {
+                margin: 24px auto;
+                width: 800px; height: 600px;
+            }
+        </style>
+        <script src="https://cdn.bootcss.com/three.js/r83/three.min.js"></script>
+        <script>
+            var renderer, scene, camera, floorBoard, loader,
+                    car, car_img_urls;
+            function loadTexture(loader, ms, pos, url, mesh, group) {
+                loader.load(url,
+                        function (texture) {
+                            var material = new THREE.MeshLambertMaterial({
+                                color: 0x666666,
+                                map: texture
+                            });
+                            ms[pos] = material;
+                            if (ms.length >= 6) {
+                                mesh.material = ms;
+                                group.add(mesh);
+                                renderer.render(scene, camera);
+                            }
+                            console.log('size of ms is' + ms.length);
+                        },
+                        function (xhr) {
+                            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                        },
+                        function (xhr) {
+                            console.log('An error happened');
+                            console.dir(xhr);
+                        }
+                );
+            }
+            function init() {
+                renderer = new THREE.WebGLRenderer({
+                    canvas: document.getElementById('mainCanvas'),
+                    antialias: true, //  开启消除锯齿,默认false
+                    precision: "highp"   // 渲染精度  highp/mediump/lowp
+                });
+                renderer.shadowMap.enabled = true;
+                renderer.shadowMapSoft = true;
+                renderer.setClearColor(0x606060);
+
+                scene = new THREE.Scene();
+                car = new THREE.Group();
+                scene.add(car);
+                loader = new THREE.TextureLoader();
+
+                car_img_urls = [
+                    'img/leopard.png', 'img/sun.png',
+                ];
+
+                var underframe = new THREE.Mesh(new THREE.BoxGeometry(8, 2, 4),
+                        new THREE.MeshLambertMaterial({color: 0x666666})
+                        );
+                car.add(underframe);
+
+                var materials = [];
+                var carriage = new THREE.Mesh(new THREE.BoxGeometry(6, 3, 4));
+                carriage.position.x = -1;
+                carriage.position.y = 2.5;
+                for (var i = 0; i < 6; ++i) {
+                    materials[i] = null;
+                    // rigt left top bottom front back
+                    switch (i) {
+                        case 1:
+                        case 3:
+                        case 4:
+                            loadTexture(loader, materials, i, car_img_urls[0], carriage, car);
+                            break;
+                        case 2:
+                            loadTexture(loader, materials, i, car_img_urls[1], carriage, car);
+                            break;
+                        case 0:
+                        case 5:
+                            materials[i] = new THREE.MeshLambertMaterial({color: 0x333333});
+                            break;
+                    }
+                }
+
+                frontWheel = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 16, 24),
+                        new THREE.MeshLambertMaterial({color: 0x333333})
+                        );
+                frontWheel.receiveShadow = true;
+                frontWheel.position.x = 2;
+                frontWheel.position.y = -1;
+                frontWheel.position.z = 2;
+                scene.add(frontWheel);
+
+                backWheel = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 16, 24),
+                        new THREE.MeshLambertMaterial({color: 0x333333})
+                        );
+                backWheel.receiveShadow = true;
+                backWheel.position.x = -2;
+                backWheel.position.y = -1;
+                backWheel.position.z = 2;
+                scene.add(backWheel);
+
+                //透视投影照相机
+                camera = new THREE.PerspectiveCamera(60, 4 / 3, 1, 1000);
+                camera.position.set(8, 6, 8);
+                camera.lookAt(new THREE.Vector3(0, 0, 0));
+                scene.add(camera);
+
+                // add floor board
+                loader.load('img/floor_01.jpg',
+                        /*资源加载完成后的回调函数*/
+                                function (texture) {
+                                    texture.wrapS = THREE.RepeatWrapping;
+                                    texture.wrapT = THREE.RepeatWrapping;
+                                    texture.repeat.set(16, 20);
+                                    texture.magFilter = THREE.LinearFilter;
+                                    texture.minFilter = THREE.LinearFilter;
+                                    var material = new THREE.MeshLambertMaterial({
+                                        color: 0xcccc99,
+                                        side: THREE.DoubleSide,
+                                        map: texture
+                                    });
+                                    floorBoard = new THREE.Mesh(new THREE.PlaneGeometry(20, 40),
+                                            material
+                                            );
+                                    floorBoard.position.y = -2.2;
+                                    floorBoard.position.z = -4;
+                                    floorBoard.position.x = -2;
+                                    floorBoard.rotation.x = -Math.PI / 2;
+                                    floorBoard.receiveShadow = true;
+                                    scene.add(floorBoard);
+                                    renderer.render(scene, camera);
+                                    console.log('load completed.');
+                                },
+                                function (xhr) {
+                                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                                },
+                                function (xhr) {
+                                    console.log('An error happened');
+                                    console.dir(xhr);
+                                }
+                        );
+
+                        var light = new THREE.AmbientLight(0xFFFFFF, 0.8);
+                        scene.add(light);
+
+                        var pointLight = new THREE.PointLight(0xFFFFFF, 1, 100);
+                        pointLight.position.set(2, 5, 8);
+                        pointLight.castShadow = true;
+                        scene.add(pointLight);
+
+                        var dlight = new THREE.DirectionalLight(0x495A80, 1);
+                        dlight.position.set(0, 0, 1);
+                        dlight.castShadow = true;
+                        scene.add(dlight);
+
+                        spotLight = new THREE.SpotLight(0xffffFF, 4, 100, Math.PI / 6, 10);
+                        spotLight.position.set(0, 20, 0);
+                        spotLight.target = car;
+                        spotLight.castShadow = true;
+//var sc = new THREE.CameraHelper( spotLight.shadow.camera );
+//scene.add(sc);
+                        scene.add(spotLight);
+
+                        renderer.render(scene, camera);
+                    }
+        </script>
+    </head>
+    <body onload="init()">
+        <h1>WebGL No.3 - 材质与纹理</h1>
+        <div class="canvas-container">
+            <canvas id="mainCanvas" width="800" height="600" ></canvas>
+        </div>
+    </body>
+</html>
