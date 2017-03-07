@@ -24,7 +24,7 @@
                                 map: texture
                             });
                             ms[pos] = material;
-                            if (ms.length >= 6) {
+                            if (completed === 6) {
                                 mesh.material = new THREE.MultiMaterial(ms);
                                 group.add(mesh);
                                 renderer.render(scene, camera);
