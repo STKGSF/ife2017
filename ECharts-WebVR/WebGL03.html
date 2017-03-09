@@ -81,15 +81,15 @@
                     // rigt left top bottom front back
                     switch (i) {
                         case 1:
-                        case 3:
                         case 4:
+                        case 5:
                             loadTexture(loader, materials, i, car_img_urls[0], carriage, car);
                             break;
                         case 2:
                             loadTexture(loader, materials, i, car_img_urls[1], carriage, car);
                             break;
                         case 0:
-                        case 5:
+                        case 3:
                             materials[i] = new THREE.MeshLambertMaterial({color: 0x666666});
                             completed++;
                             break;
