@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ECharts NO.2 - 实现自定义的统计图表</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <style>
+            h1 {display: block; margin: 8px auto; font-size: 2rem; text-align: center;}
+        </style>
+        <script src="https://cdn.bootcss.com/echarts/3.5.0/echarts.common.js"></script>
+    </head>
+    <body>
+        <div id="main" style="width: 600px;height:400px; margin: 0 auto;"></div>
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '2016上半年销售数据',
+                    textStyle: {color: '#933', fontFamily: "Times New Roman"},
+                    textAlign: 'center',
+                    left: 'center'
+                },
+                tooltip: {},
+                legend: {
+                    bottom: '10px',
+                    data: [{
+                            name: '销量',
+                            // 设置文本为红色
+                            textStyle: {
+                                color: 'rgb(224,128,49)'
+                            }
+                        }, {
+                            name: '每周平均销量',
+                            icon: 'circle',
+                            textStyle: {
+                                color: 'rgb(199,206,178)'
+                            }
+                        }],
+                    textStyle: {
+                        color: 'rgb(204,77,34)',
+                        fontStyle: 'italic',
+                        fontWeight: 400,
+                        fontSize: 16
+                    }
+                },
+                xAxis: {
+                    data: ['2016-01', '2016-02', '2016-03', "2016-04", "2016-05", "2016-06"],
+                    axisLine: {
+                        lineStyle: {
+                            width: 1,
+                            color: '#66C',
+                            shadowColor: 'rgba(0, 0, 0, 0.5)',
+                            shadowBlur: 10
+                        }
+                    }
+                },
+                yAxis: [
+                    {
+                        max: 400, interval: 50, name: '件数', nameTextStyle: {color: '#339'}
+                    },
+                    {
+                        name: '每周平均销量', nameTextStyle: {color: '#339'},
+                        position: 'right',
+                        min: 0,
+                        max: 100,
+                        axisLine: {
+                            lineStyle: {
+                                width: 1,
+                                color: '#C66',
+                                shadowColor: 'rgba(0, 0, 0, 0.5)',
+                                shadowBlur: 10
+                            }
+                        }
+                    }],
+                series: [{
+                        name: '销量',
+                        type: 'bar',
+                        data: [50, 200, 360, 100, 100, 200]
+                    }, {
+                        name: '每周平均销量',
+                        type: 'line',
+                        yAxisIndex:1,
+                        data: [12, 50, 90, 25, 25, 50]
+                    }],
+                color: ['rgb(224,128,49)', 'rgb(199,206,178)', 'rgb(25,148,117)',
+                    'rgb(11,110,72)', 'rgb(4,77,34)'],
+                backgroundColor: '#CEC'
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        </script>
+    </body>
+</html>
